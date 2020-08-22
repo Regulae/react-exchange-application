@@ -1,12 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
 import ExchangeRatesTableRow from './ExchangeRatesTableRow';
 import {Button} from 'react-bootstrap';
+import CurrencySearch from './CurrencySearch';
+import {SliceState} from './exchangeRateSlice';
 
-const exampleState: RootState = {
+const exampleState: SliceState = {
+    'state': 'finished',
+    'searchText': '',
     exchangeRates: {
-        'state': 'finished',
         'success': true,
         'timestamp': 1597907346,
         'base': 'EUR',
@@ -188,24 +191,25 @@ export default function ExchangeRatesTable() {
     const exchangeRates = exampleState.exchangeRates.rates;
     const [numberOfRowsShown, setNumberOfRowsShown] = useState(5);
     const [showButton, setShowButton] = useState(true);
-    const tableRows = Object.keys(exchangeRates).slice(0, numberOfRowsShown).map(currency =>
-        <ExchangeRatesTableRow key={currency} currency={currency} rate={exchangeRates[currency]}/>
-    );
+    const searchText = useSelector((state: RootState) => state.exchangeRates.searchText);
+    let filteredCurrencies = Object.keys(exchangeRates);
+    if (searchText.length) {
+        filteredCurrencies = filteredCurrencies.filter(key => key.indexOf(searchText.toUpperCase()) > -1);
+    } else {
+        filteredCurrencies = filteredCurrencies.slice(0, numberOfRowsShown);
+    }
     const showMore = () => {
-        console.log('numberOfRowsShown: ' + numberOfRowsShown);
-        console.log('exchangeRates: ' + Object.keys(exchangeRates).length);
         if (numberOfRowsShown + 5 <= Object.keys(exchangeRates).length) {
             setNumberOfRowsShown(numberOfRowsShown + 5);
-            console.log('If: ' + numberOfRowsShown);
-
         } else {
             setNumberOfRowsShown(Object.keys(exchangeRates).length);
             setShowButton(false);
         }
     };
-
+    const tableRows = filteredCurrencies.map(currency =>
+        <ExchangeRatesTableRow key={currency} currency={currency} rate={exchangeRates[currency]}/>
+    );
     const buttonMore = showButton ? (
-
         <div className={'d-flex justify-content-center'}>
             <Button type={'button'} variant={'outline-primary'} onClick={showMore}>
                 Show More
@@ -215,6 +219,7 @@ export default function ExchangeRatesTable() {
 
     return (
         <div className={'container'}>
+            <CurrencySearch/>
             <div className={'row'}>
                 <div className={'tableHeader col-6'}>
                     <h2>Currency</h2>

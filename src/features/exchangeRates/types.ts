@@ -1,5 +1,4 @@
 export interface ExchangeRates {
-    state: 'loading'| 'finished',
     success: boolean,
     timestamp: number,
     base: string,
