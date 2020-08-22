@@ -4,12 +4,16 @@ import {ExchangeRates} from './types';
 export interface SliceState {
     state: 'loading' | 'finished',
     searchText: string,
+    showButton: boolean,
+    valueToConvert: number,
     exchangeRates: ExchangeRates
 }
 
 const initialState: SliceState = {
     state: 'loading',
     searchText: '',
+    showButton: true,
+    valueToConvert: 0,
     exchangeRates: {
         success: false,
         timestamp: 0,
@@ -199,6 +203,12 @@ const exchangeRateSlice = createSlice({
     reducers: {
         searchCurrency(state, action) {
             state.searchText = action.payload;
+        },
+        showHideButton(state, action) {
+            state.showButton = action.payload;
+        },
+        setNewValueToConvert(state, action) {
+            state.valueToConvert = action.payload;
         }
     },
     // extraReducers: builder => {
@@ -208,6 +218,6 @@ const exchangeRateSlice = createSlice({
     // }
 });
 
-export const {searchCurrency} = exchangeRateSlice.actions;
+export const {searchCurrency, showHideButton, setNewValueToConvert} = exchangeRateSlice.actions;
 
 export default exchangeRateSlice.reducer;
