@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
 import ExchangeRatesTableRow from './ExchangeRatesTableRow';
+import {Button} from 'react-bootstrap';
 
 const exampleState: RootState = {
     exchangeRates: {
@@ -185,8 +186,32 @@ const exampleState: RootState = {
 
 export default function ExchangeRatesTable() {
     const exchangeRates = exampleState.exchangeRates.rates;
-    console.log(exchangeRates);
+    const [numberOfRowsShown, setNumberOfRowsShown] = useState(5);
+    const [showButton, setShowButton] = useState(true);
+    const tableRows = Object.keys(exchangeRates).slice(0, numberOfRowsShown).map(currency =>
+        <ExchangeRatesTableRow key={currency} currency={currency} rate={exchangeRates[currency]}/>
+    );
+    const showMore = () => {
+        console.log('numberOfRowsShown: ' + numberOfRowsShown);
+        console.log('exchangeRates: ' + Object.keys(exchangeRates).length);
+        if (numberOfRowsShown + 5 <= Object.keys(exchangeRates).length) {
+            setNumberOfRowsShown(numberOfRowsShown + 5);
+            console.log('If: ' + numberOfRowsShown);
 
+        } else {
+            setNumberOfRowsShown(Object.keys(exchangeRates).length);
+            setShowButton(false);
+        }
+    };
+
+    const buttonMore = showButton ? (
+
+        <div className={'d-flex justify-content-center'}>
+            <Button type={'button'} variant={'outline-primary'} onClick={showMore}>
+                Show More
+            </Button>
+        </div>
+    ) : null;
 
     return (
         <div className={'container'}>
@@ -198,8 +223,8 @@ export default function ExchangeRatesTable() {
                     <h2>Exchange Rate</h2>
                 </div>
             </div>
-            {Object.keys(exchangeRates).slice(0, 5).map(currency => <ExchangeRatesTableRow key={currency} currency={currency}
-                                                                                           rate={exchangeRates[currency]}/>)}
+            {tableRows}
+            {buttonMore}
         </div>
     );
 }
