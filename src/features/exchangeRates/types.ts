@@ -8,6 +8,7 @@ export interface ExchangeRates {
 }
 
 export interface CurrenciesExchangeRates {
+    [index: string] : number,
     AED: number,
     AFN: number,
     ALL: number,
