@@ -1,16 +1,17 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {ExchangeRates} from './types';
+import {ErrorResponse, ExchangeRates} from './types';
 
 export interface SliceState {
-    state: 'loading' | 'finished',
+    status: 'idle' | 'loading' | 'succeeded' | 'failed',
     searchText: string,
     showButton: boolean,
     valueToConvert: number,
-    exchangeRates: ExchangeRates
+    exchangeRates: ExchangeRates | ErrorResponse
 }
 
+
 const initialState: SliceState = {
-    state: 'loading',
+    status: 'idle',
     searchText: '',
     showButton: true,
     valueToConvert: 0,
@@ -188,14 +189,19 @@ const initialState: SliceState = {
             ZMK: 0,
             ZMW: 0,
             ZWL: 0,
+        },
+        error: {
+            code: 0,
+            type: '',
+            info: ''
         }
     }
 };
 
-// export const fetchExchangeRates = createAsyncThunk('exchangeRates/fetchExchangeRates', async () => {
-//     const response = await fetch('http://data.fixer.io/api/latest?access_key=5560f9310743be14a1f82dc1802da79a&format=1');
-//     return (await response.json()) as ExchangeRates;
-// })
+export const fetchExchangeRates = createAsyncThunk<ExchangeRates, {}, { rejectValue: ErrorResponse }>('exchangeRates/fetchExchangeRates', async () => {
+    const response = await fetch('http://data.fixer.io/api/latest?access_key=5560f9310743be14a1f82dc1802da79a&format=1');
+    return (await response.json()) as ExchangeRates;
+});
 
 const exchangeRateSlice = createSlice({
     name: 'exchangeRates',
@@ -211,11 +217,22 @@ const exchangeRateSlice = createSlice({
             state.valueToConvert = action.payload;
         }
     },
-    // extraReducers: builder => {
-    //     builder.addCase(fetchExchangeRates.pending, (state, action) => {
-    //
-    //     })
-    // }
+    extraReducers: builder => {
+        builder.addCase(fetchExchangeRates.pending, (state) => {
+            state.status = 'loading';
+        });
+        builder.addCase(fetchExchangeRates.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            state.exchangeRates = action.payload;
+        });
+        builder.addCase(fetchExchangeRates.rejected, (state, action) => {
+            if(action.payload === undefined){
+                throw new Error('Undefined Payload');
+            }
+            state.status = 'failed';
+            state.exchangeRates = action.payload;
+        });
+    }
 });
 
 export const {searchCurrency, showHideButton, setNewValueToConvert} = exchangeRateSlice.actions;

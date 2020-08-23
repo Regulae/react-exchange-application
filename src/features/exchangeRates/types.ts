@@ -3,11 +3,27 @@ export interface ExchangeRates {
     timestamp: number,
     base: string,
     date: string,
-    rates: CurrenciesExchangeRates
+    rates: CurrenciesExchangeRates,
+    error: {
+        code: number,
+        type: string,
+        info: string
+    }
+}
+
+export interface ErrorResponse {
+    success: boolean,
+    error: {
+        code: number,
+        type: string,
+        info: string
+    },
+    rates: { [index: string]: number, }
 }
 
 export interface CurrenciesExchangeRates {
-    [index: string] : number,
+    [index: string]: number,
+
     AED: number,
     AFN: number,
     ALL: number,
@@ -177,3 +193,5 @@ export interface CurrenciesExchangeRates {
     ZMW: number,
     ZWL: number,
 }
+
+export type APIResponse = ExchangeRates | ErrorResponse;
