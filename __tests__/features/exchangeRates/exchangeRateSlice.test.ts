@@ -196,13 +196,13 @@ const exampleErrorResponse: ErrorResponse = {
 }
 
 describe('exchangeRates reducer', () => {
-    it('should return the initial state', () => {
+    test('should return the initial state', () => {
         expect(reducer(undefined, {type: undefined})).toEqual(
             initialState
         );
     });
 
-    it('should handle searchCurrency', () => {
+    test('should handle searchCurrency', () => {
         expect(
             reducer(initialState, {
                 type: types.searchCurrency,
@@ -215,7 +215,7 @@ describe('exchangeRates reducer', () => {
         );
     });
 
-    it('should handle showHideButton', () => {
+    test('should handle showHideButton', () => {
         expect(
             reducer(initialState, {
                 type: types.showHideButton,
@@ -236,7 +236,7 @@ describe('exchangeRates reducer', () => {
         });
     });
 
-    it('should handle setNewValueToConvert', () => {
+    test('should handle setNewValueToConvert', () => {
         expect(
             reducer(initialState, {
                 type: types.setNewValueToConvert,
@@ -248,7 +248,7 @@ describe('exchangeRates reducer', () => {
         });
     });
 
-    it('should handle fetchExchangeRates pending', () => {
+    test('should handle fetchExchangeRates pending', () => {
         expect(
             reducer(initialState, {
                 type: types.fetchExchangeRates.pending
@@ -259,7 +259,7 @@ describe('exchangeRates reducer', () => {
         })
     });
 
-    it('should handle fetchExchangeRates fulfilled', () => {
+    test('should handle fetchExchangeRates fulfilled', () => {
         expect(
             reducer(initialState, {
                 type: types.fetchExchangeRates.fulfilled,
@@ -272,7 +272,7 @@ describe('exchangeRates reducer', () => {
         })
     });
 
-    it('should handle fetchExchangeRates rejected', () => {
+    test('should handle fetchExchangeRates rejected', () => {
         expect(
             reducer(initialState, {
                 type: types.fetchExchangeRates.rejected,
