@@ -10,7 +10,7 @@ export interface SliceState {
 }
 
 
-const initialState: SliceState = {
+export const initialState: SliceState = {
     status: 'idle',
     searchText: '',
     showButton: true,
