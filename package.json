@@ -50,16 +50,6 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
     "babel-jest": "^26.3.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.3",
-    "enzyme-to-json": "^3.5.0",
-    "jest": "^26.4.2",
-    "redux-mock-store": "^1.5.4"
-  },
-  "jest": {
-    "setupFilesAfterEnv": ["<rootDir>__tests__/setup/setupEnzyme.js"],
-    "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/setup/"
-    ]
+    "jest": "^26.4.2"
   }
 }
