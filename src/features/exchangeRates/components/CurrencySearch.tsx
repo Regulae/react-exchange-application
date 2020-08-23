@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {searchCurrency, showHideButton} from './exchangeRateSlice';
+import {searchCurrency, showHideButton} from '../exchangeRateSlice';
 
 export default function CurrencySearch() {
     const [searchText, setSearchText] = useState('');

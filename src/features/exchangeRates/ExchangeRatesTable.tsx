@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
-import ExchangeRatesTableRow from './ExchangeRatesTableRow';
+import ExchangeRatesTableRow from './components/ExchangeRatesTableRow';
 import {Button} from 'react-bootstrap';
-import CurrencySearch from './CurrencySearch';
+import CurrencySearch from './components/CurrencySearch';
 import {fetchExchangeRates, showHideButton, SliceState} from './exchangeRateSlice';
-import ConvertValue from './ConvertValue';
+import ConvertValue from './components/ConvertValue';
 
 // const exampleState: SliceState = {
 //     'status': 'succeeded',

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {setNewValueToConvert} from './exchangeRateSlice';
+import {setNewValueToConvert} from '../exchangeRateSlice';
 import {useDispatch} from 'react-redux';
 
 export default function ConvertValue() {
