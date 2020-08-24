@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../app/store';
-import ExchangeRatesTableRow from './components/ExchangeRatesTableRow';
 import {Button} from 'react-bootstrap';
+
+import {fetchExchangeRates, showHideButton} from './exchangeRateSlice';
+import ExchangeRatesTableRow from './components/ExchangeRatesTableRow';
 import CurrencySearch from './components/CurrencySearch';
-import {fetchExchangeRates, showHideButton, SliceState} from './exchangeRateSlice';
 import ConvertValue from './components/ConvertValue';
 
+// Example state for testing without fetching information from api. To use import SliceState from '/.exchangeRateSlice'.
 // const exampleState: SliceState = {
 //     'status': 'succeeded',
 //     'searchText': '',
@@ -188,9 +190,9 @@ import ConvertValue from './components/ConvertValue';
 //             'ZWL': 381.790393
 //         },
 //         error: {
-//             code: 0,
-//             type: '',
-//             info: ''
+//             code: 101,
+//             type: 'invalid-access-token',
+//             info: 'blablablablalablaab'
 //         }
 //     }
 // };
@@ -198,6 +200,8 @@ import ConvertValue from './components/ConvertValue';
 export default function ExchangeRatesTable() {
     const [numberOfRowsShown, setNumberOfRowsShown] = useState(5);
     const dispatch = useDispatch();
+
+    // selectors
     const status = useSelector((state: RootState) => state.exchangeRates.status);
     const success = useSelector((state: RootState) => state.exchangeRates.exchangeRates.success);
     const error = useSelector((state: RootState) => state.exchangeRates.exchangeRates.error);
@@ -205,17 +209,23 @@ export default function ExchangeRatesTable() {
     const showButton = useSelector((state: RootState) => state.exchangeRates.showButton);
     const searchText = useSelector((state: RootState) => state.exchangeRates.searchText);
     const valueToConvert = useSelector((state: RootState) => state.exchangeRates.valueToConvert);
+
+    // fetch exchange rates when rendering
     useEffect(() => {
         if (status === 'idle') {
-            dispatch(fetchExchangeRates({}))
+            dispatch(fetchExchangeRates({}));
         }
-    }, [status, dispatch])
+    }, [status, dispatch]);
 
     let tableRows;
-    if(success){
+
+    // when api call was successful, render table with currencies and exchange rates
+    if (success) {
+
+        // get all currencies from state and filter for searchText if one is given.
         let filteredCurrencies = Object.keys(exchangeRates);
         if (searchText.length) {
-            filteredCurrencies = filteredCurrencies.filter(key => key.indexOf(searchText.toUpperCase()) > -1);
+            filteredCurrencies = filteredCurrencies.filter(key => key.indexOf(searchText.toUpperCase().trim()) > -1);
         } else {
             filteredCurrencies = filteredCurrencies.slice(0, numberOfRowsShown);
         }
@@ -224,49 +234,57 @@ export default function ExchangeRatesTable() {
                                    rate={exchangeRates[currency]}/>
         );
 
-    const showMore = () => {
-        if (numberOfRowsShown + 5 <= Object.keys(exchangeRates).length) {
-            setNumberOfRowsShown(numberOfRowsShown + 5);
-        } else {
-            setNumberOfRowsShown(Object.keys(exchangeRates).length);
-            dispatch(showHideButton(false));
-        }
-    };
+        // show 5 more currencies when button is clicked
+        const showMore = () => {
+            if (numberOfRowsShown + 5 <= Object.keys(exchangeRates).length) {
+                setNumberOfRowsShown(numberOfRowsShown + 5);
+            } else {
+                setNumberOfRowsShown(Object.keys(exchangeRates).length);
+                dispatch(showHideButton(false));
+            }
+        };
 
-    const buttonMore = showButton ? (
-        <div className={'d-flex justify-content-center'}>
-            <Button type={'button'} variant={'outline-primary'} onClick={showMore}>
-                Show More
-            </Button>
-        </div>
-    ) : null;
-    const convertedValue = valueToConvert > 0 ?
-        <div className={'tableHeader col'}>
-            <h2>Converted Value</h2>
-        </div> : null;
-
-    return (
-        <div className={'container'}>
-            <CurrencySearch/>
-            <ConvertValue/>
-            <div className={'row'}>
-                <div className={'tableHeader col'}>
-                    <h2>Currency</h2>
-                </div>
-                <div className={'tableHeader col'}>
-                    <h2>Exchange Rate</h2>
-                </div>
-                {convertedValue}
+        const buttonMore = showButton ? (
+            <div className={'d-flex justify-content-start'}>
+                <Button type={'button'} variant={'outline-primary'} onClick={showMore}>
+                    Show More
+                </Button>
             </div>
-            {tableRows}
-            {buttonMore}
-        </div>
-    );
-    } else {
-        const errorMessage = <p>{error.code} {error.type} {error.info}</p>;
+        ) : null;
 
-        return(
+        // add column for converted values
+        const convertedValue = valueToConvert > 0 ?
+            <div className={'tableHeader col'}>
+                <h2>Converted Value</h2>
+            </div> : null;
+
+        return (
+            <div className={'container'}>
+                <h1>Exchange Rates Search and Converter</h1>
+                <div className={'row input-row'}>
+                    <CurrencySearch/>
+                    <ConvertValue/>
+                </div>
+                <div className={'row'}>
+                    <div className={'tableHeader col-4'}>
+                        <h2>Currency</h2>
+                    </div>
+                    <div className={'tableHeader col-4'}>
+                        <h2>Exchange Rate</h2>
+                    </div>
+                    {convertedValue}
+                </div>
+                {tableRows}
+                {buttonMore}
+            </div>
+        );
+    } else {
+        // show error message
+        const errorMessage = <div className={'alert alert-warning'}
+                                  role={'alert'}>{error.code} {error.type} {error.info}</div>;
+
+        return (
             <div>{errorMessage}</div>
-        )
+        );
     }
 }

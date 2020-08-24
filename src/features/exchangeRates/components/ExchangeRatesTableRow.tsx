@@ -12,10 +12,10 @@ export default function ExchangeRatesTableRow({currency, rate, valueToConvert}: 
     if (valueToConvert === 0) {
         return (
             <div className={'row'}>
-                <div className={'tableRow col-6'}>
+                <div className={'tableRow col-4'}>
                     <p>{currency}</p>
                 </div>
-                <div className={'tableRow col-6'}>
+                <div className={'tableRow col-4'}>
                     <p>{rate.toLocaleString()}</p>
                 </div>
             </div>

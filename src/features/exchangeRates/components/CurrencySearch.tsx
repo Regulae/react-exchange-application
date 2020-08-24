@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
+
 import {searchCurrency, showHideButton} from '../exchangeRateSlice';
 
 export default function CurrencySearch() {
@@ -16,7 +17,7 @@ export default function CurrencySearch() {
     }, [dispatch, searchText]);
 
     return (
-        <div className={'row'}>
+        <div className={'col-2'}>
             <input type={'text'} placeholder={'Search'} value={searchText} onChange={onSearchTextChanged}/>
         </div>
     );

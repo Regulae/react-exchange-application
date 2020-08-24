@@ -1,4 +1,4 @@
-import {configureStore, ThunkAction, Action, MiddlewareArray} from '@reduxjs/toolkit';
+import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
 import {useDispatch} from 'react-redux';
 
 import exchangeRateReducer from '../features/exchangeRates/exchangeRateSlice';
@@ -7,7 +7,6 @@ export const store = configureStore({
     reducer: {
         exchangeRates: exchangeRateReducer
     }
-    // middleware: new MiddlewareArray().concat(additionalMiddleware, logger)
 });
 
 export type RootState = ReturnType<typeof store.getState>;
